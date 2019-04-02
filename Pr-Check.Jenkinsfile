@@ -15,14 +15,6 @@ pipeline {
      }
 
     post {
-        always {
-            echo 'Archive artifact'
-            archiveArtifacts artifacts: 'app/build/reports/**'
-
-            echo 'Delete Workspace.'
-            deleteDir()
-
-        }
         success {
             echo 'build is success!!!'
         }
