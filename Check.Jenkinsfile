@@ -30,7 +30,7 @@ pipeline {
 
             post {
                 always {
-                     echo 'Report unit test to jenkins!!!'
+                     echo 'Report unit test to jenkins!'
                      junit '**/test-results/**/*.xml'
 
                      echo 'Archive artifact'
