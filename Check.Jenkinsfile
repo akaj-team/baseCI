@@ -22,29 +22,6 @@ pipeline {
                 }
             }
         }
-
-        stage('pr-unit-test') {
-            steps {
-                sh './gradlew clean test jacoco'
-            }
-
-            post {
-                always {
-                     echo 'Report unit test to jenkins!'
-                     junit '**/test-results/**/*.xml'
-
-                     echo 'Archive artifact'
-                     archiveArtifacts artifacts: 'app/build/reports/**'
-                     stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
-                }
-                success {
-                     echo 'Test run success!!!'
-                }
-                failure {
-                     echo 'Test run failure!!!'
-                }
-            }
-        }
      }
 
     post {
