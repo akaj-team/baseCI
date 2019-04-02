@@ -4,12 +4,16 @@ pipeline {
          docker { image 'localhost:5000/android-env' }
     }
 
+    options {
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
     stages {
         stage('pr-detekt') {
             steps {
-                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME}"
+                #sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME}"
                 sh './gradlew clean detekt'
-                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/"
+                #sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/"
             }
 
             post {
