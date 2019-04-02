@@ -1,11 +1,11 @@
 pipeline {
     agent any
-    stages {
-        agent docker {
-            android-pr-check
-        }
 
+    stages {
         stage('pr-check') {
+            agent docker {
+                android-pr-check
+            }
             steps {
                 sh './gradlew detekt'
                 sh 'bundle exec danger --danger_id=android-detekt'
