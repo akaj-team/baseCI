@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+## Android environment
+    android-env:
+      build: ./android-env
+
+### Android pr check
+    android-pr-check:
+      build: ./android-pr-check
+      depends_on:
+        - android-env
+
+### Android deploy
+    android-deploy:
+      build: ./android-deploy
+      depends_on:
+        - android-env
+
+### Jenkins blu ocean
+    jenkins-blue:
+      build:

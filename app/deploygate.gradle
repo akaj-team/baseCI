@@ -1,0 +1,17 @@
+apply plugin: 'deploygate'
+
+deploygate {
+    userName = System.getenv('DEPLOYGATE_NAME')
+    token = System.getenv('DEPLOYGATE_TOKEN')
+    apks {
+        debug {
+            if (System.getenv('CIRCLE_BRANCH')) {
+                message = System.getenv('CIRCLE_BRANCH') + '\n'
+            }
+            // set as build message
+            message = message + 'git log --oneline -1'.execute([], project.rootDir).in.text.trim()
+            // if you are using a distribution page, you can update it simultaneously
+            // distributionKey = "1234567890abcdef1234567890abcdef"
+        }
+    }
+}

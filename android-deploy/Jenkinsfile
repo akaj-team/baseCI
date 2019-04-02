@@ -1,0 +1,98 @@
+pipeline {
+    agent any
+    environment {
+        TEAM = "all"
+        BUILD_TYPE = "debug"
+    }
+
+    stages {
+        stage('Prepare variables') {
+            steps {
+                sh 'env'
+                sh 'rm -f release_notes.txt'
+                sh 'touch release_notes.txt'
+                script {
+                    GIT_AUTHOR = sh(
+                            script: "git --no-pager show -s --format='%an' HEAD",
+                            returnStdout: true
+                    ).trim()
+
+                    APP_VERSION = sh(
+                            script: "cat app/build.gradle  | grep 'versionName ' | awk '{print \$2}' | tr -d \\\" ",
+                            returnStdout: true
+                    ).trim()
+
+                    if (env.GIT_PREVIOUS_SUCCESSFUL_COMMIT) {
+                        GIT_MESSAGE = sh(
+                                script: "git --no-pager log --oneline --format=\"%s\" HEAD ^${GIT_PREVIOUS_SUCCESSFUL_COMMIT} || git log --oneline --format=\"%s\" -1",
+                                returnStdout: true
+                        ).trim()
+                    } else {
+                        GIT_MESSAGE = sh(
+                                script: "git log --oneline --format=\"%s\" -1",
+                                returnStdout: true
+                        ).trim()
+                    }
+
+                }
+            }
+        }
+
+        stage('Deploy Development') {
+            when { expression { BRANCH_NAME ==~ /^develop.*/ } }
+            steps {
+                script {
+                    def branch = BRANCH_NAME
+                    TEAM_NAME = branch.substring(branch.indexOf('-') + 1)
+                    if (TEAM_NAME == "develop") {
+                        TEAM_NAME = "All teams"
+                    } else {
+                        TEAM = TEAM_NAME
+                    }
+                    TEAM_NAME = TEAM_NAME.capitalize()
+                }
+                sh 'env'
+                writeFile file: "release_notes.txt", text: "${TEAM_NAME}: #${BUILD_ID}\n"
+                sh 'git log --oneline -1 >> release_notes.txt'
+
+                sh 'rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME} || true'
+                sh './gradlew :app:assemble$BUILD_TYPE'
+                sh './gradlew crashlyticsUploadDistribution$BUILD_TYPE'
+
+                sh 'rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/ || true'
+            }
+        }
+    }
+
+    post {
+        always {
+
+            echo 'Archive artifact'
+            archiveArtifacts artifacts: 'app/build/outputs/**'
+
+            echo 'Delete Workspace.'
+            sh 'sudo chown -R jenkins.jenkins .'
+            sh 'chmod -R +w .'
+            deleteDir()
+        }
+        success {
+            echo 'deploy is success!!!'
+            #script {
+            #    notify.success(
+            #            token: env.SLACK_TOKEN,
+            #            branch: BRANCH_NAME,
+            #            buildType: BUILD_TYPE,
+            #            buildNumber: env.BUILD_NUMBER,
+            #            buildUrl: env.BUILD_URL,
+            #            author: GIT_AUTHOR,
+            #            branchName: env.BRANCH_NAME,
+            #            message: GIT_MESSAGE,
+            #            appVersion: APP_VERSION
+            #    )
+            #}
+        }
+        failure {
+            echo 'deploy is failure!!!'
+        }
+    }
+}
