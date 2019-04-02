@@ -7,9 +7,9 @@ pipeline {
     stages {
         stage('pr-detekt') {
             steps {
-                sh 'rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME}'
+                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME}"
                 sh './gradlew clean detekt'
-                sh 'rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/'
+                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/"
             }
 
             post {
@@ -22,5 +22,37 @@ pipeline {
                 }
             }
         }
+
+        stage('pr-unit-test') {
+            steps {
+                sh './gradlew clean test jacoco'
+            }
+
+            post {
+                always {
+                     echo 'Report unit test to jenkins!'
+                     junit '**/test-results/**/*.xml'
+
+                     echo 'Archive artifact'
+                     archiveArtifacts artifacts: 'app/build/reports/**'
+                     stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
+                }
+                success {
+                     echo 'Test run success!!!'
+                }
+                failure {
+                     echo 'Test run failure!!!'
+                }
+            }
+        }
      }
+
+    post {
+        success {
+            echo 'build is success!!!'
+        }
+        failure {
+            echo 'build is failure!!!'
+        }
+    }
 }
