@@ -20,9 +20,6 @@ pipeline {
             archiveArtifacts artifacts: 'app/build/reports/**'
 
             echo 'Delete Workspace.'
-            sh 'sudo chown -R jenkins.jenkins .'
-            sh 'chmod -R +w .'
-            sh 'ls -la'
             deleteDir()
 
         }
