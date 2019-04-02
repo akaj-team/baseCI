@@ -1,13 +1,13 @@
 def APP_MODULE = "App"
 pipeline {
     agent {
-         docker { image 'android-env' }
+         docker { image 'localhost:5000/android-env' }
     }
 
     stages {
         stage('pr-detekt') {
             steps {
-                sh './gradlew detekt'
+                sh './gradlew clean detekt'
             }
 
             post {
