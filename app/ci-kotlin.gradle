@@ -8,6 +8,16 @@ dependencies {
     detekt 'io.gitlab.arturbosch.detekt:detekt-formatting:1.0.0.RC4-2'
 }
 
+task generalApplocationSuffix() {
+    if (System.getenv('CI')) {
+        doLast {
+            def date = new Date()
+            def formattedDate = date.format('yyyy-MM-dd HH-mm-ss')
+            rootProject.ext.applicationIdSuffix = formattedDate
+        }
+    }
+}
+
 task detekt(type: JavaExec) {
     def conf
     if (project.hasProperty('detektConfigFile')) {
