@@ -25,6 +25,7 @@ pipeline {
 
             steps {
                 unstash name: 'Checkout'
+                sh 'ls'
                 sh "env $GRADLE_USER_HOME /.gradle"
                 sh "mkdir -p $GRADLE_USER_HOME"
                 sh "env $GRADLE_USER_CACHE /.gradle_cache"
