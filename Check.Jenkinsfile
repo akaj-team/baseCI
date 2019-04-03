@@ -1,4 +1,3 @@
-#!groovy
 def APP_MODULE = "app"
 
 pipeline {
