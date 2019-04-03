@@ -9,13 +9,7 @@ pipeline {
     }
 
     environment {
-        GRADLE_OPTS = '-Dorg.gradle.daemon=false'
         JENKINS_NODE_COOKIE = 'dontKillMe'
-    }
-
-    options {
-        skipDefaultCheckout()
-        buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
     }
 
     stages {
@@ -28,9 +22,13 @@ pipeline {
         }
 
         stage('pr-detekt') {
+            options {
+                skipDefaultCheckout()
+            }
+
             steps {
                 unstash name: 'Checkout'
-                sh './gradlew clean detekt'
+                sh './gradlew clean detekt --parallel'
             }
 
             post {
@@ -42,6 +40,10 @@ pipeline {
         }
 
         stage('pr-unit-test') {
+            options {
+                skipDefaultCheckout()
+            }
+
             steps {
                 unstash name: 'Checkout'
                 sh './gradlew clean test jacoco'
