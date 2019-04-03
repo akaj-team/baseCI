@@ -15,7 +15,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                deleteDir()
                 sh "mkdir -p $DIR_NAME"
                 sh "chmod 777 $DIR_NAME"
                 sh "cd $DIR_NAME"
@@ -26,51 +25,51 @@ pipeline {
             }
         }
 
-//        stage('pr-detekt') {
-//            options {
-//                skipDefaultCheckout()
-//            }
-//
-//            steps {
-//                unstash name: 'Checkout'
-//                sh './gradlew clean detekt --parallel'
-//            }
-//
-//            post {
-//                success {
-//                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
-//                    echo 'Detekt Success!!!'
-//                }
-//            }
-//        }
+        stage('pr-detekt') {
+            options {
+                skipDefaultCheckout()
+            }
 
-//        stage('pr-unit-test') {
-//            options {
-//                skipDefaultCheckout()
-//            }
-//
-//            steps {
-//                unstash name: 'Checkout'
-//                sh './gradlew clean test jacoco'
-//            }
-//
-//            post {
-//                always {
-//                    echo 'Report unit test to jenkins!'
-//                    junit '**/test-results/**/*.xml'
-//
-//                    echo 'Archive artifact'
-//                    archiveArtifacts artifacts: 'app/build/reports/**'
-//                }
-//                success {
-//                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
-//                    echo 'Test run success!!!'
-//                }
-//                failure {
-//                    echo 'Test run failure!!!'
-//                }
-//            }
-//        }
+            steps {
+                unstash name: 'Checkout'
+                sh './gradlew clean detekt --parallel'
+            }
+
+            post {
+                success {
+                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
+                    echo 'Detekt Success!!!'
+                }
+            }
+        }
+
+        stage('pr-unit-test') {
+            options {
+                skipDefaultCheckout()
+            }
+
+            steps {
+                unstash name: 'Checkout'
+                sh './gradlew clean test jacoco'
+            }
+
+            post {
+                always {
+                    echo 'Report unit test to jenkins!'
+                    junit '**/test-results/**/*.xml'
+
+                    echo 'Archive artifact'
+                    archiveArtifacts artifacts: 'app/build/reports/**'
+                }
+                success {
+                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
+                    echo 'Test run success!!!'
+                }
+                failure {
+                    echo 'Test run failure!!!'
+                }
+            }
+        }
     }
 
     post {
