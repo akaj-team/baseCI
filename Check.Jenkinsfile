@@ -1,4 +1,10 @@
 def APP_MODULE = "app"
+def server = Artifactory.server 'art-p-01'
+def rtGradle = Artifactory.newGradleBuild()
+rtGradle.tool = 'gradle_4.6'
+rtGradle.resolver server: server, repo: 'ons-repo'
+rtGradle.deployer server: server, repo: 'registers-snapshots
+
 pipeline {
     agent {
          docker {
@@ -7,9 +13,27 @@ pipeline {
          }
     }
 
+    environment {
+         GRADLE_OPTS = '-Dorg.gradle.daemon=false'
+    }
+
+    options {
+            skipDefaultCheckout()
+            buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
+    }
+
     stages {
+        stage ('Checkout') {
+                  steps {
+                  deleteDir()
+                  checkout scm
+                  stash name: 'Checkout'
+                  }
+        }
+
         stage('pr-detekt') {
             steps {
+                unstash name: 'Checkout'
                 sh './gradlew clean detekt'
             }
 
@@ -23,6 +47,7 @@ pipeline {
 
         stage('pr-unit-test') {
             steps {
+                unstash name: 'Checkout'
                 sh './gradlew clean test jacoco'
             }
 
