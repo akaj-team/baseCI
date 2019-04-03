@@ -3,32 +3,32 @@ def server = Artifactory.server 'art-p-01'
 def rtGradle = Artifactory.newGradleBuild()
 rtGradle.tool = 'gradle_4.6'
 rtGradle.resolver server: server, repo: 'ons-repo'
-rtGradle.deployer server: server, repo: 'registers-snapshots
+rtGradle.deployer server: server, repo: 'registers-snapshots'
 
 pipeline {
     agent {
-         docker {
+        docker {
             image 'localhost:5000/android-env'
             args '-v /Users/vinhhuynhl.b/.gradle:/.gradle:rw'
-         }
+        }
     }
 
     environment {
-         GRADLE_OPTS = '-Dorg.gradle.daemon=false'
+        GRADLE_OPTS = '-Dorg.gradle.daemon=false'
     }
 
     options {
-            skipDefaultCheckout()
-            buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
+        skipDefaultCheckout()
+        buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
     }
 
     stages {
-        stage ('Checkout') {
-                  steps {
-                  deleteDir()
-                  checkout scm
-                  stash name: 'Checkout'
-                  }
+        stage('Checkout') {
+            steps {
+                deleteDir()
+                checkout scm
+                stash name: 'Checkout'
+            }
         }
 
         stage('pr-detekt') {
@@ -53,22 +53,22 @@ pipeline {
 
             post {
                 always {
-                     echo 'Report unit test to jenkins!'
-                     junit '**/test-results/**/*.xml'
+                    echo 'Report unit test to jenkins!'
+                    junit '**/test-results/**/*.xml'
 
-                     echo 'Archive artifact'
-                     archiveArtifacts artifacts: 'app/build/reports/**'
+                    echo 'Archive artifact'
+                    archiveArtifacts artifacts: 'app/build/reports/**'
                 }
                 success {
-                     stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
-                     echo 'Test run success!!!'
+                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
+                    echo 'Test run success!!!'
                 }
                 failure {
-                     echo 'Test run failure!!!'
+                    echo 'Test run failure!!!'
                 }
             }
         }
-     }
+    }
 
     post {
         success {
