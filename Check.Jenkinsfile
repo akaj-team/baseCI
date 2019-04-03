@@ -11,6 +11,7 @@ pipeline {
 
     environment {
         GRADLE_OPTS = '-Dorg.gradle.daemon=false'
+        JENKINS_NODE_COOKIE = 'dontKillMe'
     }
 
     options {
