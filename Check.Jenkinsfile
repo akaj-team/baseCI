@@ -1,10 +1,5 @@
 #!groovy
 def APP_MODULE = "app"
-def artServer = Artifactory.server('art-p-01')
-def rtGradle = Artifactory.newGradleBuild()
-rtGradle.tool = 'gradle_4.6'
-rtGradle.resolver server: artServer, snapshotRepo: 'ons-repo'
-rtGradle.deployer server: artServer, snapshotRepo: 'registers-snapshots'
 
 pipeline {
     agent {
