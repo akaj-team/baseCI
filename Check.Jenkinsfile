@@ -1,6 +1,4 @@
 def APP_MODULE = "app"
-def GRADLE_USER_HOME = "GRADLE_USER_CACHE"
-def $GRADLE_USER_CACHE = "GRADLE_USER_CACHE"
 
 pipeline {
     agent {
@@ -26,9 +24,11 @@ pipeline {
             steps {
                 unstash name: 'Checkout'
                 sh 'ls'
-                sh "env $GRADLE_USER_HOME /.gradle"
+                sh 'mkdir -p ~/.gradle'
+                sh "env $GRADLE_USER_HOME ~/.gradle"
                 sh "mkdir -p $GRADLE_USER_HOME"
-                sh "env $GRADLE_USER_CACHE /.gradle_cache"
+                sh 'mkdir -p ~/.gradle_cache'
+                sh "env $GRADLE_USER_CACHE ~/.gradle_cache"
                 sh "mkdir -p $GRADLE_USER_CACHE"
                 sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME}"
                 sh './gradlew clean detekt'
