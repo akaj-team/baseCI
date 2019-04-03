@@ -1,4 +1,4 @@
-def APP_MODULE = "App"
+def APP_MODULE = "app"
 pipeline {
     agent {
          docker { image 'localhost:5000/android-env' }
@@ -16,8 +16,6 @@ pipeline {
 
             post {
                 success {
-                    sh 'pwd'
-                    sh 'ls'
                     stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
                     echo 'Detekt Success!!!'
                 }
