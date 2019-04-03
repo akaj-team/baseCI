@@ -16,7 +16,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 sh "mkdir -p $DIR_NAME"
-                sh "chmod -R 777 /$DIR_NAME"
+                sh 'ls'
+                sh "chmod 777 $DIR_NAME"
                 checkout scm
                 stash name: 'Checkout'
             }
