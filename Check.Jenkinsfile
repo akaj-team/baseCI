@@ -1,7 +1,10 @@
 def APP_MODULE = "app"
 pipeline {
     agent {
-         docker { image 'localhost:5000/android-env' }
+         docker {
+            image 'localhost:5000/android-env'
+            args '-v /Users/vinhhuynhl.b/.gradle:.gradle:rw'
+         }
     }
 
     options {
