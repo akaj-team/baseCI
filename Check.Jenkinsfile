@@ -7,10 +7,6 @@ pipeline {
          }
     }
 
-    options {
-        timeout(time: 20, unit: 'MINUTES')
-    }
-
     stages {
         stage('pr-detekt') {
             steps {
