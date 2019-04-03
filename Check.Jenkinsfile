@@ -17,10 +17,11 @@ pipeline {
             steps {
                 deleteDir()
                 sh "mkdir -p $DIR_NAME"
-                sh 'ls'
                 sh "chmod 777 $DIR_NAME"
                 sh "cd $DIR_NAME"
                 checkout scm
+                sh 'ls'
+                sh 'pwd'
                 stash name: 'Checkout'
             }
         }
