@@ -15,11 +15,10 @@ pipeline {
             }
 
             post {
-                always {
-                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
-                }
-
                 success {
+                    sh 'pwd'
+                    sh 'ls'
+                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
                     echo 'Detekt Success!!!'
                 }
             }
@@ -37,9 +36,9 @@ pipeline {
 
                      echo 'Archive artifact'
                      archiveArtifacts artifacts: 'app/build/reports/**'
-                     stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
                 }
                 success {
+                     stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
                      echo 'Test run success!!!'
                 }
                 failure {
