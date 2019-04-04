@@ -4,7 +4,7 @@ pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
-            args '/.gradle:/.gradle'
+            args '-v /.gradle:/.gradle'
         }
     }
 
