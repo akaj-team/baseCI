@@ -31,8 +31,8 @@ pipeline {
             steps {
 //                sh "mkdir -p $GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_USER_HOME"
-                echo $GRADLE_USER_HOME
-                echo $env.GRADLE_USER_HOME
+//                echo $GRADLE_USER_HOME
+//                echo $env.GRADLE_USER_HOME
                 unstash name: 'Checkout'
                 sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE} ${GRADLE_USER_HOME} || true"
                 sh "ls -a $GRADLE_USER_HOME"
