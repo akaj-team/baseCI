@@ -4,6 +4,7 @@ pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
+            args '-v ~/.gradle : /.gradle'
         }
     }
 
@@ -36,7 +37,6 @@ pipeline {
 
                 failure {
                     echo 'Test run failure!!!'
-                    deleteDir()
                 }
             }
         }
