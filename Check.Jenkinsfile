@@ -22,18 +22,21 @@ pipeline {
 
             steps {
                 unstash name: 'Checkout'
-                sh 'mkdir ~/.gradle_cache'
-                sh 'mkdir ~/.gradle'
+                sh 'ENV GRADLE_USER_HOME /.gradle'
+                sh "mkdir -p ${env.GRADLE_USER_HOME}"
+                sh 'ENV GRADLE_USER_CACHE /.gradle_cache'
+                sh "mkdir -p ${env.GRADLE_USER_CACHE}"
 
-                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ~/.gradle_cache / ~/.gradle"
+                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${env.GRADLE_USER_CACHE} / ${env.GRADLE_USER_HOME}"
                 sh './gradlew clean detekt'
-                sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper ~/.gradle_cache/"
+                sh "rsync -au ${env.GRADLE_USER_HOME}/caches ${env.GRADLE_USER_HOME}/wrapper ${env.GRADLE_USER_CACHE}/"
             }
 
             post {
                 success {
                     stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
                     echo 'Detekt Success!!!'
+                    deleteDir()
                 }
             }
         }
@@ -59,6 +62,7 @@ pipeline {
 //                success {
 //                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
 //                    echo 'Test run success!!!'
+//                    deleteDir()
 //                }
 //                failure {
 //                    echo 'Test run failure!!!'
