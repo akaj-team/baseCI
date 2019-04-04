@@ -25,9 +25,9 @@ pipeline {
                 sh 'mkdir ~/.gradle_cache'
                 sh 'mkdir ~/.gradle'
 
-                sh "rsync -a --include /caches --include /wrapper --exclude '/*' .gradle_cache / .gradle"
+                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ~/.gradle_cache / ~/.gradle"
                 sh './gradlew clean detekt'
-                sh "rsync -au .gradle/caches .gradle/wrapper ./gradle_cache/"
+                sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper ~/.gradle_cache/"
             }
 
             post {
