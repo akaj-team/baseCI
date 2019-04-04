@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        GRADLE_USER_HOME = '/.gradle’'
+        GRADLE_USER_HOME = '/.gradle'
         GRADLE_USER_CACHE = '/.gradle_cache'
     }
 
@@ -26,6 +26,8 @@ pipeline {
             }
 
             steps {
+                sh "mkdir -p $GRADLE_USER_HOME"
+                sh "mkdir -p $GRADLE_USER_CACHE"
                 unstash name: 'Checkout'
                 sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME} || true"
                 sh './gradlew clean detekt'
@@ -36,7 +38,6 @@ pipeline {
                 success {
                     stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
                     echo 'Detekt Success!!!'
-                    deleteDir()
                 }
 
                 failure {
