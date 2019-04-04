@@ -1,17 +1,17 @@
 def APP_MODULE = "app"
 def GRADLE_VERSION = "4.10.3"
+
 pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
-            args '-v /.gradle:/.gradle'
+            args "-v /.gradle:/gradle_cache"
         }
     }
 
     environment {
         GRADLE_USER_HOME = '/.gradle'
         GRADLE_USER_CACHE = '/.gradle_cache'
-        ANDROID_HOME = '/usr/local/android-sdk'
     }
 
     stages {
@@ -29,9 +29,8 @@ pipeline {
 
             steps {
                 sh "mkdir -p $GRADLE_USER_HOME"
-                sh "mkdir -p $GRADLE_USER_CACHE"
                 unstash name: 'Checkout'
-                sh "rsync -a --include /caches --include /wrapper --include /daemon/${GRADLE_VERSION} --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME} || true"
+                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME} || true"
                 sh './gradlew clean detekt'
                 sh "rsync -au ${GRADLE_USER_HOME}/daemon/${GRADLE_VERSION} ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/ || true"
             }
