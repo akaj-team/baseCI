@@ -4,7 +4,6 @@ pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
-//            args '-v /Users/vinhhuynhl.b/.gradle:/.gradle:rw'
         }
     }
 
@@ -23,11 +22,12 @@ pipeline {
 
             steps {
                 unstash name: 'Checkout'
-                sh 'mkdir ./gradle_cache'
-                sh 'chmod 777 ./gradle_cache'
-                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ./gradle_cache / ~/.gradle"
+                sh 'mkdir ~/.gradle_cache'
+                sh 'mkdir ~/.gradle'
+
+                sh "rsync -a --include /caches --include /wrapper --exclude '/*' .gradle_cache / .gradle"
                 sh './gradlew clean detekt'
-                sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper ./gradle_cache/"
+                sh "rsync -au .gradle/caches .gradle/wrapper ./gradle_cache/"
             }
 
             post {
