@@ -11,6 +11,7 @@ pipeline {
     environment {
         GRADLE_USER_HOME = '/.gradle'
         GRADLE_USER_CACHE = '/.gradle_cache'
+        ANDROID_HOME = '/usr/local/android-sdk'
     }
 
     stages {
