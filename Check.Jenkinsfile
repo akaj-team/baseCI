@@ -1,11 +1,10 @@
 def APP_MODULE = "app"
-def GRADLE_VERSION = "4.10.3"
 
 pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
-            args "-v /.gradle:/gradle_cache"
+            args "-v /.gradle:/.gradle_cache"
         }
     }
 
