@@ -4,8 +4,12 @@ pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
-//            args '-v /.gradle:/.gradle'
         }
+    }
+
+    environment {
+        GRADLE_USER_HOME = '/.gradle’'
+        GRADLE_USER_CACHE = '/.gradle_cache'
     }
 
     stages {
@@ -23,14 +27,9 @@ pipeline {
 
             steps {
                 unstash name: 'Checkout'
-                sh 'env'
-                sh 'rm -f env.list'
-                sh 'env | grep "GIT\\|NODE_\\|STAGE\\|BUILD\\|JOB_NAME\\|ghprbPullId\\|CHANGE_ID" > env.list'
-                sh 'cat env.list'
-
-                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${env.GRADLE_USER_CACHE} / ${env.GRADLE_USER_HOME}"
+                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME} || true"
                 sh './gradlew clean detekt'
-                sh "rsync -au ${env.GRADLE_USER_HOME}/caches ${env.GRADLE_USER_HOME}/wrapper ${env.GRADLE_USER_CACHE}/"
+                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/ || true"
             }
 
             post {
