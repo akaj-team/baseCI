@@ -22,11 +22,6 @@ pipeline {
 
             steps {
                 unstash name: 'Checkout'
-                sh "env ${env.GRADLE_USER_HOME} /.gradle"
-                sh "mkdir -p ${env.GRADLE_USER_HOME}"
-                sh "env ${env.GRADLE_USER_CACHE} /.gradle_cache"
-                sh "mkdir -p ${env.GRADLE_USER_CACHE}"
-
                 sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${env.GRADLE_USER_CACHE} / ${env.GRADLE_USER_HOME}"
                 sh './gradlew clean detekt'
                 sh "rsync -au ${env.GRADLE_USER_HOME}/caches ${env.GRADLE_USER_HOME}/wrapper ${env.GRADLE_USER_CACHE}/"
