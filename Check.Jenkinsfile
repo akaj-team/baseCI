@@ -4,7 +4,7 @@ pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
-//            args '-v /.gradle:/.gradle'
+            args '-v /.gradle:/.gradle'
         }
     }
 
@@ -38,10 +38,12 @@ pipeline {
             post {
                 success {
                     stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
+                    deleteDir()
                     echo 'Detekt Success!!!'
                 }
 
                 failure {
+                    deleteDir()
                     echo 'Test run failure!!!'
                 }
             }
@@ -79,9 +81,11 @@ pipeline {
 
     post {
         success {
+            deleteDir()
             echo 'build is success!!!'
         }
         failure {
+            deleteDir()
             echo 'build is failure!!!'
         }
     }
