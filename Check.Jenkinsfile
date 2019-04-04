@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         GRADLE_USER_HOME = '/.gradle'
-        GRADLE_USER_CACHE = '/.gradle_cache'
+        GRADLE_USER_CACHE = '/.gradle_temp'
     }
 
     stages {
@@ -20,7 +20,7 @@ pipeline {
             agent {
                 docker {
                     image 'localhost:5000/android-env'
-                    args "-v /.gradle:/.gradle_cache"
+                    args "-v /.gradle:${GRADLE_USER_CACHE}"
                 }
             }
 
@@ -29,16 +29,13 @@ pipeline {
             }
 
             steps {
-//                sh "mkdir -p $GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_USER_HOME"
-//                echo $GRADLE_USER_HOME
-//                echo $env.GRADLE_USER_HOME
                 unstash name: 'Checkout'
                 sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME} || true"
                 sh "ls -a $GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_USER_CACHE"
                 sh './gradlew clean detekt'
-                sh "rsync -au ${GRADLE_USER_HOME}/daemon/${GRADLE_VERSION} ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/ || true"
+                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/ || true"
             }
 
             post {
@@ -55,34 +52,41 @@ pipeline {
             }
         }
 
-//        stage('pr-unit-test') {
-//            options {
-//                skipDefaultCheckout()
-//            }
-//
-//            steps {
-//                unstash name: 'Checkout'
-//                sh './gradlew clean test jacoco'
-//            }
-//
-//            post {
-//                always {
-//                    echo 'Report unit test to jenkins!'
-//                    junit '**/test-results/**/*.xml'
-//
-//                    echo 'Archive artifact'
-//                    archiveArtifacts artifacts: 'app/build/reports/**'
-//                }
-//                success {
-//                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
-//                    echo 'Test run success!!!'
-//                    deleteDir()
-//                }
-//                failure {
-//                    echo 'Test run failure!!!'
-//                }
-//            }
-//        }
+        stage('pr-unit-test') {
+            agent {
+                docker {
+                    image 'localhost:5000/android-env'
+                    args "-v /.gradle:${GRADLE_USER_CACHE}"
+                }
+            }
+
+            options {
+                skipDefaultCheckout()
+            }
+
+            steps {
+                unstash name: 'Checkout'
+                sh './gradlew clean test jacoco'
+            }
+
+            post {
+                always {
+                    echo 'Report unit test to jenkins!'
+                    junit '**/test-results/**/*.xml'
+
+                    echo 'Archive artifact'
+                    archiveArtifacts artifacts: 'app/build/reports/**'
+                }
+                success {
+                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
+                    echo 'Test run success!!!'
+                    deleteDir()
+                }
+                failure {
+                    echo 'Test run failure!!!'
+                }
+            }
+        }
     }
 
     post {
