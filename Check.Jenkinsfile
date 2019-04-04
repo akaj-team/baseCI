@@ -22,9 +22,9 @@ pipeline {
 
             steps {
                 unstash name: 'Checkout'
-                sh 'ENV GRADLE_USER_HOME /.gradle'
+                sh 'env GRADLE_USER_HOME /.gradle'
                 sh "mkdir -p ${env.GRADLE_USER_HOME}"
-                sh 'ENV GRADLE_USER_CACHE /.gradle_cache'
+                sh 'env GRADLE_USER_CACHE /.gradle_cache'
                 sh "mkdir -p ${env.GRADLE_USER_CACHE}"
 
                 sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${env.GRADLE_USER_CACHE} / ${env.GRADLE_USER_HOME}"
