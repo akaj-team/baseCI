@@ -42,6 +42,9 @@ pipeline {
                 sh "ls -a $GRADLE_TEMP"
                 sh './gradlew clean detekt'
                 sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+
+                sh "ls -a $GRADLE_USER_HOME"
+                sh "ls -a $GRADLE_TEMP"
             }
 
             post {
