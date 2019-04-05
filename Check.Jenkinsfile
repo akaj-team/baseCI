@@ -22,7 +22,7 @@ pipeline {
             agent {
                 docker {
                     image "localhost:5000/android-env"
-                    args "-v /.gradle:${GRADLE_TEMP}"
+                    args "-v /.gradle:$GRADLE_TEMP"
                 }
             }
 
@@ -31,11 +31,12 @@ pipeline {
             }
 
             steps {
-                sh "mkdir -p ${GRADLE_USER_HOME}"
+                sh "mkdir -p $GRADLE_USER_HOME"
                 unstash name: 'Checkout'
 
-                sh "ls -a ${GRADLE_USER_HOME}"
-                sh "ls -a ${GRADLE_TEMP}"
+                sh "ls -a $GRADLE_USER_HOME"
+                sh "ls -a $GRADLE_TEMP"
+
 //                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
 //                sh "ls -a $GRADLE_USER_HOME"
 //                sh "ls -a $GRADLE_TEMP"
@@ -55,17 +56,6 @@ pipeline {
                     echo 'Test run failure!!!'
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            deleteDir()
-            echo 'build is success!!!'
-        }
-        failure {
-            deleteDir()
-            echo 'build is failure!!!'
         }
     }
 }
