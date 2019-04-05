@@ -22,7 +22,7 @@ pipeline {
             agent {
                 docker {
                     image 'localhost:5000/android-env'
-                    args "-v ~/.gradle:${GRADLE_TEMP}"
+                    args "-v $HOME/.gradle:${GRADLE_TEMP}"
                 }
             }
 
