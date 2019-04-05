@@ -1,13 +1,7 @@
 def APP_MODULE = "app"
 
 pipeline {
-
-    agent {
-        docker {
-            image 'localhost:5000/android-env'
-            args "-v /.gradle:${GRADLE_TEMP}"
-        }
-    }
+    agent none
 
     environment {
         GRADLE_USER_HOME = '/.gradle'
@@ -16,6 +10,8 @@ pipeline {
 
     stages {
         stage('Checkout') {
+            agent any
+
             steps {
                 checkout scm
                 stash name: 'Checkout'
@@ -23,6 +19,12 @@ pipeline {
         }
 
         stage('pr-detekt') {
+            agent {
+                docker {
+                    image 'localhost:5000/android-env'
+                    args "-v /.gradle:${GRADLE_TEMP}"
+                }
+            }
 
             options {
                 skipDefaultCheckout()
