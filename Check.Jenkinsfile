@@ -46,7 +46,7 @@ pipeline {
 
                 sh "ls -a $GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_TEMP"
-                sh "ls -a $GRADLE_DATA"
+                sh "ls -a ${env.GRADLE_DATA}"
             }
 
             post {
