@@ -132,12 +132,3 @@ RUN chmod -R a+rx $ANDROID_HOME $ANDROID_SDK_HOME
 #RUN chmod -R a+rx $ANDROID_NDK_HOME
 
 #RUN echo "sdk.dir=$ANDROID_HOME" > local.properties
-
-ENV PROJECT /project
-RUN mkdir -p $PROJECT
-
-ENV GRADLE_USER_HOME /.gradle
-RUN mkdir -p $GRADLE_USER_HOME
-
-ENV GRADLE_USER_CACHE /.gradle_cache
-RUN mkdir -p $GRADLE_USER_CACHE

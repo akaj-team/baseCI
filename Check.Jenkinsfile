@@ -1,11 +1,12 @@
 def APP_MODULE = "app"
 
 pipeline {
+
     agent any
 
     environment {
-        GRADLE_USER_HOME = "$HOME/.gradle"
-        GRADLE_USER_CACHE = "$HOME/.gradle_cache"
+        GRADLE_USER_HOME = "/.gradle"
+        GRADLE_USER_CACHE = "/.gradle_cache"
     }
 
     stages {
@@ -17,11 +18,10 @@ pipeline {
         }
 
         stage('pr-detekt') {
-
             agent {
                 docker {
                     image 'localhost:5000/android-env'
-                    args "-v /.gradle:${GRADLE_USER_CACHE}"
+                    args "-v $HOME/.gradle:${GRADLE_USER_CACHE}"
                 }
             }
 
