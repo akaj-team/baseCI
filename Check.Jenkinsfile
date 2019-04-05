@@ -1,7 +1,7 @@
 def APP_MODULE = "app"
 
 pipeline {
-    agent none
+    agent any
 
     environment {
         GRADLE_USER_HOME = '/.gradle'
@@ -17,6 +17,7 @@ pipeline {
         }
 
         stage('pr-detekt') {
+
             agent {
                 docker {
                     image 'localhost:5000/android-env'
