@@ -9,8 +9,6 @@ pipeline {
         }
     }
 
-    agent any
-
     environment {
         GRADLE_USER_HOME = '/.gradle'
         GRADLE_TEMP = '/.gradle_cache'
