@@ -5,7 +5,7 @@ pipeline {
     agent {
         docker {
             image 'localhost:5000/android-env'
-            args "-v $HOME/.gradle:${GRADLE_TEMP}"
+            args "-v /.gradle:${GRADLE_TEMP}"
         }
     }
 
@@ -54,42 +54,6 @@ pipeline {
                 }
             }
         }
-
-//        stage('pr-unit-test') {
-//            agent {
-//                docker {
-//                    image 'localhost:5000/android-env'
-//                    args "-v /.gradle:${GRADLE_TEMP}"
-//                }
-//            }
-//
-//            options {
-//                skipDefaultCheckout()
-//            }
-//
-//            steps {
-//                unstash name: 'Checkout'
-//                sh './gradlew clean test jacoco'
-//            }
-//
-//            post {
-//                always {
-//                    echo 'Report unit test to jenkins!'
-//                    junit '**/test-results/**/*.xml'
-//
-//                    echo 'Archive artifact'
-//                    archiveArtifacts artifacts: 'app/build/reports/**'
-//                }
-//                success {
-//                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-test-report'
-//                    echo 'Test run success!!!'
-//                    deleteDir()
-//                }
-//                failure {
-//                    echo 'Test run failure!!!'
-//                }
-//            }
-//        }
     }
 
     post {
