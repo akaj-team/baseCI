@@ -31,6 +31,7 @@ pipeline {
             }
 
             steps {
+                sh "echo $HOME"
                 sh "mkdir -p $GRADLE_USER_HOME"
                 unstash name: 'Checkout'
 
