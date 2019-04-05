@@ -6,6 +6,7 @@ pipeline {
     environment {
         GRADLE_USER_HOME = '/.gradle'
         GRADLE_TEMP = '/.gradle_temp'
+        GRADLE_DATA = '/gradle_data'
     }
 
     stages {
@@ -22,7 +23,7 @@ pipeline {
             agent {
                 docker {
                     image "localhost:5000/android-env"
-                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP"
+                    args "-v $GRADLE_DATA:$GRADLE_TEMP"
                 }
             }
 
@@ -36,6 +37,7 @@ pipeline {
 
                 sh "ls -a $GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_TEMP"
+                sh "ls -a $GRADLE_DATA"
 
                 sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
                 sh "ls -a $GRADLE_USER_HOME"
@@ -45,6 +47,7 @@ pipeline {
 
                 sh "ls -a $GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_TEMP"
+                sh "ls -a $GRADLE_DATA"
             }
 
             post {
