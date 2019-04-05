@@ -32,13 +32,13 @@ pipeline {
             steps {
                 unstash name: 'Checkout'
 
-                sh "ls -a $GRADLE_USER_HOME"
-                sh "ls -a $GRADLE_USER_CACHE"
-                sh "rsync -a --include /caches --include /wrapper --exclude '/*' ${GRADLE_USER_CACHE}/ ${GRADLE_USER_HOME} || true"
-                sh "ls -a $GRADLE_USER_HOME"
-                sh "ls -a $GRADLE_USER_CACHE"
+                sh "ls -a $HOME$GRADLE_USER_HOME"
+                sh "ls -a $HOME$GRADLE_USER_CACHE"
+                sh "rsync -a --include /caches --include /wrapper --exclude '/*' $HOME${GRADLE_USER_CACHE}/ $HOME${GRADLE_USER_HOME} || true"
+                sh "ls -a $HOME$GRADLE_USER_HOME"
+                sh "ls -a $HOME$GRADLE_USER_CACHE"
                 sh './gradlew clean detekt'
-                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_USER_CACHE}/ || true"
+                sh "rsync -au $HOME${GRADLE_USER_HOME}/caches $HOME${GRADLE_USER_HOME}/wrapper $HOME${GRADLE_USER_CACHE}/ || true"
             }
 
             post {
