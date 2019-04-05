@@ -21,7 +21,7 @@ pipeline {
             agent {
                 docker {
                     image 'localhost:5000/android-env'
-                    args "-v $HOME/.gradle:${GRADLE_USER_CACHE}"
+                    args "-v /.gradle:${GRADLE_USER_CACHE}"
                 }
             }
 
