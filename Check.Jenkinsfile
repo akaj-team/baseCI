@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         GRADLE_USER_HOME = '/.gradle'
-        GRADLE_USER_CACHE = '/.gradle_temp'
+        GRADLE_USER_CACHE = '/.gradle_cache'
     }
 
     stages {
