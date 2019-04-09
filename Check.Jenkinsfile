@@ -38,6 +38,8 @@ pipeline {
 
                 sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
                 sh './gradlew clean detekt'
+
+                stash includes: "$GRADLE_USER_HOME", name: 'gradle-home'
             }
 
             post {
@@ -72,7 +74,10 @@ pipeline {
                 sh "chmod 777 $GRADLE_TEMP"
                 unstash name: 'Checkout'
 
-                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
+                dir("$GRADLE_USER_HOME") {
+                    unstash 'gradle-home'
+                }
+
                 sh './gradlew clean test jacoco'
             }
 
