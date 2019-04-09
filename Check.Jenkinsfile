@@ -35,7 +35,7 @@ pipeline {
                     }
 
                     steps {
-                        sh "mkdir -p $GRADLE_USER_HOME"
+                        sh "mkdir -p $GRADLE_USER_HOME && echo 'org.gradle.daemon=false' >> ~/.gradle/gradle.properties"
                         sh "mkdir -p $GRADLE_USER_HOME/caches"
                         sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
 
@@ -48,7 +48,7 @@ pipeline {
                         sh "ls -a $GRADLE_TEMP"
 
                         // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
-                        // -P & --ignore-existing
+                        // -t & --ignore-existing
                         sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                         sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
@@ -85,7 +85,7 @@ pipeline {
                     }
 
                     steps {
-                        sh "mkdir -p $GRADLE_USER_HOME"
+                        sh "mkdir -p $GRADLE_USER_HOME && echo 'org.gradle.daemon=false' >> ~/.gradle/gradle.properties"
                         sh "mkdir -p $GRADLE_USER_HOME/caches"
                         sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
 
@@ -98,7 +98,7 @@ pipeline {
                         sh "ls -a $GRADLE_TEMP"
 
                         // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
-                        // -P & --ignore-existing
+                        // -t & --ignore-existing
                         sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                         sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
