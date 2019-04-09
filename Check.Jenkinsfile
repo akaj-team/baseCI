@@ -31,14 +31,13 @@ pipeline {
             }
 
             steps {
-                sh "echo $env.BUILD_TYPE"
-//                sh "mkdir -p $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_TEMP"
-//                unstash name: 'Checkout'
-//
-//                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
-//                sh './gradlew clean detekt'
+                sh "mkdir -p $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_TEMP"
+                unstash name: 'Checkout'
+
+                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
+                sh './gradlew clean detekt'
             }
 
             post {
@@ -55,43 +54,45 @@ pipeline {
             }
         }
 
-//        stage('ut-report') {
-//            agent {
-//                docker {
-//                    image "localhost:5000/android-env"
-//                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP:rw"
-//                }
-//            }
-//
-//            options {
-//                skipDefaultCheckout()
-//            }
-//
-//            steps {
-//                sh "mkdir -p $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_TEMP"
-//                unstash name: 'Checkout'
-//
-//                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
-//                sh './gradlew clean test jacoco'
-//            }
-//
-//            post {
-//                aways {
-//                    echo 'Report unit test to jenkins!!!'
-//                    junit '**/test-results/**/*.xml'
-//
-//                    echo 'Archive artifact'
-//                    archiveArtifacts "artifacts: ${APP_MODULE}/build/reports/**"
-//                }
-//
-//                success {
-//                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
-//                    deleteDir()
-//                    echo 'Test Success!!!'
-//                }
-//            }
-//        }
+        stage('ut-report') {
+            agent {
+                docker {
+                    image "localhost:5000/android-env"
+                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP:rw"
+                }
+            }
+
+            options {
+                skipDefaultCheckout()
+            }
+
+            steps {
+                sh "mkdir -p $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_TEMP"
+                unstash name: 'Checkout'
+
+                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
+                sh './gradlew clean test jacoco'
+            }
+
+            post {
+                aways {
+                    echo 'Report unit test to jenkins!!!'
+                    junit '**/test-results/**/*.xml'
+
+                    echo 'Archive artifact'
+                    archiveArtifacts "artifacts: ${APP_MODULE}/build/reports/**"
+
+                    deleteDir()
+
+                }
+
+                success {
+                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-report'
+                    echo 'Test Success!!!'
+                }
+            }
+        }
     }
 }
