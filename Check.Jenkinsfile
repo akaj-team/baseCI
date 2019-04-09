@@ -77,7 +77,7 @@ pipeline {
             }
 
             post {
-                aways {
+                always {
                     echo 'Report unit test to jenkins!!!'
                     junit '**/test-results/**/*.xml'
 
