@@ -47,14 +47,14 @@ pipeline {
                         sh "ls -a $GRADLE_USER_HOME"
                         sh "ls -a $GRADLE_TEMP"
 
-                        sh "rsync -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
-                        sh "rsync -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+                        sh "rsync -P -au --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
+                        sh "rsync -P -au --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
                         sh "ls -a $GRADLE_USER_HOME"
 
                         sh './gradlew clean detekt'
 
-                        sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+                        sh "rsync -P -au --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
                     }
 
                     post {
@@ -95,14 +95,14 @@ pipeline {
                         sh "ls -a $GRADLE_USER_HOME"
                         sh "ls -a $GRADLE_TEMP"
                         // Use -v for debug
-                        sh "rsync -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
-                        sh "rsync -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+                        sh "rsync -P -au --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
+                        sh "rsync -P -au --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
                         sh "ls -a $GRADLE_USER_HOME"
 
                         sh './gradlew clean test jacoco'
 
-                        sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+                        sh "rsync -P -au --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
                     }
 
                     post {
