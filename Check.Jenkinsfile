@@ -47,6 +47,8 @@ pipeline {
                         sh "ls -a $GRADLE_USER_HOME"
                         sh "ls -a $GRADLE_TEMP"
 
+                        // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
+                        // -P & --ignore-existing
                         sh "rsync -P -au --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                         sh "rsync -P -au --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
@@ -94,7 +96,9 @@ pipeline {
 
                         sh "ls -a $GRADLE_USER_HOME"
                         sh "ls -a $GRADLE_TEMP"
-                        // Use -v for debug
+
+                        // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
+                        // -P & --ignore-existing
                         sh "rsync -P -au --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                         sh "rsync -P -au --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
