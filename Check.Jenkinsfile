@@ -31,18 +31,14 @@ pipeline {
             }
 
             steps {
-                sh "mkdir -p $GRADLE_USER_HOME"
-                sh "chmod 777 $GRADLE_USER_HOME"
-                sh "chmod 777 $GRADLE_TEMP"
-                unstash name: 'Checkout'
-
-                sh "ls -a $GRADLE_USER_HOME"
-                sh "ls -a $GRADLE_TEMP"
-
-                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
-                sh "ls -a $GRADLE_USER_HOME"
-                sh "ls -a $GRADLE_TEMP"
-                sh './gradlew clean detekt'
+                sh "echo $BUILD_TYPE"
+//                sh "mkdir -p $GRADLE_USER_HOME"
+//                sh "chmod 777 $GRADLE_USER_HOME"
+//                sh "chmod 777 $GRADLE_TEMP"
+//                unstash name: 'Checkout'
+//
+//                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
+//                sh './gradlew clean detekt'
             }
 
             post {
@@ -54,9 +50,48 @@ pipeline {
 
                 failure {
                     deleteDir()
-                    echo 'Test run failure!!!'
+                    echo 'Detekt run failure!!!'
                 }
             }
         }
+
+//        stage('ut-report') {
+//            agent {
+//                docker {
+//                    image "localhost:5000/android-env"
+//                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP:rw"
+//                }
+//            }
+//
+//            options {
+//                skipDefaultCheckout()
+//            }
+//
+//            steps {
+//                sh "mkdir -p $GRADLE_USER_HOME"
+//                sh "chmod 777 $GRADLE_USER_HOME"
+//                sh "chmod 777 $GRADLE_TEMP"
+//                unstash name: 'Checkout'
+//
+//                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
+//                sh './gradlew clean test jacoco'
+//            }
+//
+//            post {
+//                aways {
+//                    echo 'Report unit test to jenkins!!!'
+//                    junit '**/test-results/**/*.xml'
+//
+//                    echo 'Archive artifact'
+//                    archiveArtifacts "artifacts: ${APP_MODULE}/build/reports/**"
+//                }
+//
+//                success {
+//                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
+//                    deleteDir()
+//                    echo 'Test Success!!!'
+//                }
+//            }
+//        }
     }
 }
