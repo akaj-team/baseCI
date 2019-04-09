@@ -24,7 +24,8 @@ pipeline {
             agent {
                 docker {
                     image "localhost:5000/android-env"
-                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP:rw"
+                    // ~/Desktop/Gradle-Jenkins-Local can be change by any dir.
+                    args "-v ~/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
                 }
             }
 
@@ -49,6 +50,8 @@ pipeline {
                 sh "rsync -au -v --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
                 sh './gradlew clean detekt'
+
+                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
             }
 
             post {
