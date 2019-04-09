@@ -31,7 +31,7 @@ pipeline {
             }
 
             steps {
-                sh "echo $BUILD_TYPE"
+                sh "echo $env.BUILD_TYPE"
 //                sh "mkdir -p $GRADLE_USER_HOME"
 //                sh "chmod 777 $GRADLE_USER_HOME"
 //                sh "chmod 777 $GRADLE_TEMP"
