@@ -110,14 +110,12 @@ pipeline {
                     }
 
                     post {
-                        always {
+                        success {
                             echo 'Report unit test to jenkins!!!'
                             junit '**/test-results/**/*.xml'
 
                             echo 'Archive artifact'
                             archiveArtifacts artifacts: 'app/build/reports/'
-                        }
-                        success {
                             echo 'Test run success!!!'
                         }
                         failure {
