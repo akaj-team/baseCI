@@ -24,8 +24,8 @@ pipeline {
             agent {
                 docker {
                     image "localhost:5000/android-env"
-                    // ~/Desktop/Gradle-Jenkins-Local can be change by any dir.
-                    args "-v ~/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
+                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can
+                    args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
                 }
             }
 
