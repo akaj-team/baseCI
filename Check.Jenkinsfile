@@ -1,4 +1,6 @@
 def APP_MODULE = "app"
+def GRADLE_VERSION = "4.10.3"
+def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
 
 pipeline {
     agent none
@@ -15,16 +17,6 @@ pipeline {
             steps {
                 checkout scm
                 stash name: 'Checkout'
-            }
-        }
-
-        stage('Gradle') {
-            agent any
-
-            steps {
-                dir("$GRADLE_TEMP") {
-                    stash name: 'gradle-home'
-                }
             }
         }
 
@@ -45,13 +37,13 @@ pipeline {
                 sh "chmod 777 $GRADLE_USER_HOME"
                 sh "chmod 777 $GRADLE_TEMP"
                 unstash name: 'Checkout'
-                dir("$GRADLE_USER_HOME") {
-                    unstash 'gradle-home'
-                }
-                sh "ls -a $GRADLE_USER_HOME"
-//                sh './gradlew clean detekt'
 
-//                stash includes: "$GRADLE_USER_HOME", name: 'gradle-home'
+                sh "ls -a $GRADLE_USER_HOME"
+                sh "ls -a $GRADLE_TEMP"
+
+                sh "rsync -au -v --include /caches/${GRADLE_VERSION} --include /wrapper/dist/${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
+                sh "ls -la $GRADLE_USER_HOME"
+//                sh './gradlew clean detekt'
             }
 
             post {
@@ -63,53 +55,9 @@ pipeline {
 
                 failure {
                     deleteDir()
-                    echo 'Detekt run failure!!!'
+                    echo 'Test run failure!!!'
                 }
             }
         }
-
-//        stage('ut-report') {
-//            agent {
-//                docker {
-//                    image "localhost:5000/android-env"
-//                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP:rw"
-//                }
-//            }
-//
-//            options {
-//                skipDefaultCheckout()
-//            }
-//
-//            steps {
-//                sh "mkdir -p $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_TEMP"
-//                unstash name: 'Checkout'
-//
-//                dir("$GRADLE_USER_HOME") {
-//                    unstash 'gradle-home'
-//                }
-//
-//                sh './gradlew clean test jacoco'
-//            }
-//
-//            post {
-//                always {
-//                    echo 'Report unit test to jenkins!!!'
-//                    junit '**/test-results/**/*.xml'
-//
-//                    echo 'Archive artifact'
-//                    archiveArtifacts "artifacts: ${APP_MODULE}/build/reports/**"
-//
-//                    deleteDir()
-//
-//                }
-//
-//                success {
-//                    stash includes: "${APP_MODULE}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml", name: 'jacoco-report'
-//                    echo 'Test Success!!!'
-//                }
-//            }
-//        }
     }
 }
