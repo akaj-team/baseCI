@@ -22,47 +22,49 @@ pipeline {
             agent any
 
             steps {
-                sh "ls -a ${GRADLE_TEMP}"
+                stash name: "gradle-home", includes: "$GRADLE_TEMP/*"
             }
         }
 
-//        stage('pr-detekt') {
-//            agent {
-//                docker {
-//                    image "localhost:5000/android-env"
-//                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP:rw"
-//                }
-//            }
-//
-//            options {
-//                skipDefaultCheckout()
-//            }
-//
-//            steps {
-//                sh "mkdir -p $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_TEMP"
-//                unstash name: 'Checkout'
-//
-//                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ ${GRADLE_USER_HOME} || true"
+        stage('pr-detekt') {
+            agent {
+                docker {
+                    image "localhost:5000/android-env"
+                    args "-v /Users/vinhhuynhl.b/.gradle:$GRADLE_TEMP:rw"
+                }
+            }
+
+            options {
+                skipDefaultCheckout()
+            }
+
+            steps {
+                sh "mkdir -p $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_TEMP"
+                unstash name: 'Checkout'
+                dir("$GRADLE_USER_HOME") {
+                    unstash 'gradle-home'
+                }
+                sh "ls -a $GRADLE_USER_HOME"
 //                sh './gradlew clean detekt'
-//
+
 //                stash includes: "$GRADLE_USER_HOME", name: 'gradle-home'
-//            }
-//
-//            post {
-//                success {
-//                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
-//                    deleteDir()
-//                    echo 'Detekt Success!!!'
-//                }
-//
-//                failure {
-//                    deleteDir()
-//                    echo 'Detekt run failure!!!'
-//                }
-//            }
-//        }
+            }
+
+            post {
+                success {
+                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
+                    deleteDir()
+                    echo 'Detekt Success!!!'
+                }
+
+                failure {
+                    deleteDir()
+                    echo 'Detekt run failure!!!'
+                }
+            }
+        }
 
 //        stage('ut-report') {
 //            agent {
