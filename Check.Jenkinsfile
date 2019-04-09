@@ -19,113 +19,109 @@ pipeline {
                 stash name: 'Source-Code'
             }
         }
-        stage('Parallel UT & Detekt Stage') {
-            parallel {
-                stage('detekt-report') {
-                    agent {
-                        docker {
-                            image "localhost:5000/android-env"
-                            // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
-                            args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
-                        }
-                    }
+        stage('detekt-report') {
+            agent {
+                docker {
+                    image "localhost:5000/android-env"
+                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
+                    args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
+                }
+            }
 
-                    options {
-                        skipDefaultCheckout()
-                    }
+            options {
+                skipDefaultCheckout()
+            }
 
-                    steps {
-                        sh "mkdir -p $GRADLE_USER_HOME"
-                        sh "touch $GRADLE_USER_HOME/gradle.properties"
-                        sh "echo 'org.gradle.daemon=false' >> $GRADLE_USER_HOME/gradle.properties"
-                        sh "mkdir -p $GRADLE_USER_HOME/caches"
-                        sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
+            steps {
+                sh "mkdir -p $GRADLE_USER_HOME"
+                sh "touch $GRADLE_USER_HOME/gradle.properties"
+                sh "echo 'org.gradle.daemon=false' >> $GRADLE_USER_HOME/gradle.properties"
+                sh "mkdir -p $GRADLE_USER_HOME/caches"
+                sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
 
-                        sh "chmod 777 $GRADLE_USER_HOME"
-                        sh "chmod 777 $GRADLE_USER_HOME/caches"
-                        sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
-                        unstash name: 'Source-Code'
+                sh "chmod 777 $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_USER_HOME/caches"
+                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
+                unstash name: 'Source-Code'
 
-                        sh "ls -a $GRADLE_USER_HOME"
-                        sh "ls -a $GRADLE_TEMP"
+                sh "ls -a $GRADLE_USER_HOME"
+                sh "ls -a $GRADLE_TEMP"
 
-                        // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
-                        // -t & --ignore-existing
-                        sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
-                        sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+                // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
+                // -t & --ignore-existing
+                sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
+                sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
-                        sh "ls -a $GRADLE_USER_HOME"
+                sh "ls -a $GRADLE_USER_HOME"
 
-                        sh './gradlew clean detekt'
+                sh './gradlew clean detekt'
 
-                        sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
-                    }
+                sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+            }
 
-                    post {
-                        success {
-                            stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
-                            echo 'Detekt Success!!!'
-                        }
-
-                        failure {
-                            echo 'Detekt failure!!!'
-                        }
-                    }
+            post {
+                success {
+                    stash includes: "${APP_MODULE}/build/reports/detekt/detekt-checkstyle.xml", name: 'detekt-checkstyle'
+                    echo 'Detekt Success!!!'
                 }
 
-                stage('ut-report') {
-                    agent {
-                        docker {
-                            image "localhost:5000/android-env"
-                            // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
-                            args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
-                        }
-                    }
+                failure {
+                    echo 'Detekt failure!!!'
+                }
+            }
+        }
 
-                    options {
-                        skipDefaultCheckout()
-                    }
+        stage('ut-report') {
+            agent {
+                docker {
+                    image "localhost:5000/android-env"
+                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
+                    args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
+                }
+            }
 
-                    steps {
-                        sh "mkdir -p $GRADLE_USER_HOME"
-                        sh "touch $GRADLE_USER_HOME/gradle.properties"
-                        sh "echo 'org.gradle.daemon=false' >> $GRADLE_USER_HOME/gradle.properties"
-                        sh "mkdir -p $GRADLE_USER_HOME/caches"
-                        sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
+            options {
+                skipDefaultCheckout()
+            }
 
-                        sh "chmod 777 $GRADLE_USER_HOME"
-                        sh "chmod 777 $GRADLE_USER_HOME/caches"
-                        sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
-                        unstash name: 'Source-Code'
+            steps {
+                sh "mkdir -p $GRADLE_USER_HOME"
+                sh "touch $GRADLE_USER_HOME/gradle.properties"
+                sh "echo 'org.gradle.daemon=false' >> $GRADLE_USER_HOME/gradle.properties"
+                sh "mkdir -p $GRADLE_USER_HOME/caches"
+                sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
 
-                        sh "ls -a $GRADLE_USER_HOME"
-                        sh "ls -a $GRADLE_TEMP"
+                sh "chmod 777 $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_USER_HOME/caches"
+                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
+                unstash name: 'Source-Code'
 
-                        // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
-                        // -t & --ignore-existing
-                        sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
-                        sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+                sh "ls -a $GRADLE_USER_HOME"
+                sh "ls -a $GRADLE_TEMP"
 
-                        sh "ls -a $GRADLE_USER_HOME"
+                // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
+                // -t & --ignore-existing
+                sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
+                sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
-                        sh './gradlew clean test jacoco'
+                sh "ls -a $GRADLE_USER_HOME"
 
-                        sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
-                    }
+                sh './gradlew clean test jacoco'
 
-                    post {
-                        success {
-                            echo 'Report unit test to jenkins!!!'
-                            junit '**/test-results/**/*.xml'
+                sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+            }
 
-                            echo 'Archive artifact'
-                            archiveArtifacts artifacts: 'app/build/reports/'
-                            echo 'Test run success!!!'
-                        }
-                        failure {
-                            echo 'Test run failure!!!'
-                        }
-                    }
+            post {
+                success {
+                    echo 'Report unit test to jenkins!!!'
+                    junit '**/test-results/**/*.xml'
+
+                    echo 'Archive artifact'
+                    archiveArtifacts artifacts: 'app/build/reports/'
+                    echo 'Test run success!!!'
+                }
+                failure {
+                    echo 'Test run failure!!!'
                 }
             }
         }
