@@ -50,6 +50,8 @@ pipeline {
                         sh "rsync -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                         sh "rsync -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
+                        sh "ls -a $GRADLE_USER_HOME"
+
                         sh './gradlew clean detekt'
 
                         sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
@@ -95,6 +97,8 @@ pipeline {
                         // Use -v for debug
                         sh "rsync -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                         sh "rsync -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+
+                        sh "ls -a $GRADLE_USER_HOME"
 
                         sh './gradlew clean test jacoco'
 
