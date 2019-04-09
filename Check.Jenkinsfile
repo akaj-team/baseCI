@@ -16,7 +16,7 @@ pipeline {
 
             steps {
                 checkout scm
-                stash name: 'Checkout'
+                stash name: 'Source-Code'
             }
         }
         stage('Parallel UT & Detekt Stage') {
@@ -42,7 +42,7 @@ pipeline {
                         sh "chmod 777 $GRADLE_USER_HOME"
                         sh "chmod 777 $GRADLE_USER_HOME/caches"
                         sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
-                        unstash name: 'Checkout'
+                        unstash name: 'Source-Code'
 
                         sh "ls -a $GRADLE_USER_HOME"
                         sh "ls -a $GRADLE_TEMP"
@@ -88,7 +88,7 @@ pipeline {
                         sh "chmod 777 $GRADLE_USER_HOME"
                         sh "chmod 777 $GRADLE_USER_HOME/caches"
                         sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
-                        unstash name: 'Checkout'
+                        unstash name: 'Source-Code'
 
                         sh "ls -a $GRADLE_USER_HOME"
                         sh "ls -a $GRADLE_TEMP"
