@@ -22,7 +22,7 @@ pipeline {
             agent any
 
             steps {
-                dir("$GRADLE_USER_HOME") {
+                dir("$GRADLE_TEMP") {
                     stash name: 'gradle-home'
                 }
             }
