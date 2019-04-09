@@ -39,7 +39,7 @@ pipeline {
                 sh "ls -a $HOME$GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_TEMP"
 
-                sh "rsync -au -v --include /caches/4.10.3 --include /wrapper/dist/gradle-4.10.3-all --exclude '/*' ${GRADLE_TEMP}/ $HOME${GRADLE_USER_HOME} || true"
+                sh "rsync -au -v --include /caches --include /wrapper --exclude '/*' ${GRADLE_TEMP}/ $HOME${GRADLE_USER_HOME} || true"
                 sh "ls -a $HOME$GRADLE_USER_HOME"
                 sh "ls -a $GRADLE_TEMP"
                 sh './gradlew clean detekt'
