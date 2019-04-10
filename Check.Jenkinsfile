@@ -35,7 +35,8 @@ pipeline {
             steps {
                 sh "mkdir -p $GRADLE_USER_HOME"
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.daemon=false' >> $GRADLE_USER_HOME/gradle.properties"
+                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
+                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "mkdir -p $GRADLE_USER_HOME/caches"
                 sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
 
