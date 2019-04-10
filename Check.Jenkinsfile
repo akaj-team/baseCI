@@ -72,59 +72,59 @@ pipeline {
             }
         }
 
-        stage('ut-report') {
-            agent {
-                docker {
-                    image "localhost:5000/android-env"
-                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
-                    args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
-                }
-            }
-
-            options {
-                skipDefaultCheckout()
-            }
-
-            steps {
-                sh "mkdir -p $GRADLE_USER_HOME"
-                sh "touch $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.daemon=false' >> $GRADLE_USER_HOME/gradle.properties"
-                sh "mkdir -p $GRADLE_USER_HOME/caches"
-                sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
-
-                sh "chmod 777 $GRADLE_USER_HOME"
-                sh "chmod 777 $GRADLE_USER_HOME/caches"
-                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
-                unstash name: 'Source-Code'
-
-                sh "ls -a $GRADLE_USER_HOME"
-                sh "ls -a $GRADLE_TEMP"
-
-                // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
-                // -t & --ignore-existing
-                sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
-                sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
-
-                sh "ls -a $GRADLE_USER_HOME"
-
-                sh './gradlew clean test jacoco'
-
-                sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
-            }
-
-            post {
-                success {
-                    echo 'Report unit test to jenkins!!!'
-                    junit '**/test-results/**/*.xml'
-
-                    echo 'Archive artifact'
-                    archiveArtifacts artifacts: 'app/build/reports/'
-                    echo 'Test run success!!!'
-                }
-                failure {
-                    echo 'Test run failure!!!'
-                }
-            }
-        }
+//        stage('ut-report') {
+//            agent {
+//                docker {
+//                    image "localhost:5000/android-env"
+//                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
+//                    args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
+//                }
+//            }
+//
+//            options {
+//                skipDefaultCheckout()
+//            }
+//
+//            steps {
+//                sh "mkdir -p $GRADLE_USER_HOME"
+//                sh "touch $GRADLE_USER_HOME/gradle.properties"
+//                sh "echo 'org.gradle.daemon=false' >> $GRADLE_USER_HOME/gradle.properties"
+//                sh "mkdir -p $GRADLE_USER_HOME/caches"
+//                sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
+//
+//                sh "chmod 777 $GRADLE_USER_HOME"
+//                sh "chmod 777 $GRADLE_USER_HOME/caches"
+//                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
+//                unstash name: 'Source-Code'
+//
+//                sh "ls -a $GRADLE_USER_HOME"
+//                sh "ls -a $GRADLE_TEMP"
+//
+//                // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
+//                // -t & --ignore-existing
+//                sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
+//                sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+//
+//                sh "ls -a $GRADLE_USER_HOME"
+//
+//                sh './gradlew clean test jacoco'
+//
+//                sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+//            }
+//
+//            post {
+//                success {
+//                    echo 'Report unit test to jenkins!!!'
+//                    junit '**/test-results/**/*.xml'
+//
+//                    echo 'Archive artifact'
+//                    archiveArtifacts artifacts: 'app/build/reports/'
+//                    echo 'Test run success!!!'
+//                }
+//                failure {
+//                    echo 'Test run failure!!!'
+//                }
+//            }
+//        }
     }
 }
