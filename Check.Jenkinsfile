@@ -23,7 +23,7 @@ pipeline {
             agent {
                 docker {
                     image "android-env"
-                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock"
+                    args "-u root -v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock"
                 }
             }
 
