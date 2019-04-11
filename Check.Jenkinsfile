@@ -22,7 +22,7 @@ pipeline {
         stage('detekt-report') {
             agent {
                 docker {
-                    image "at/android-env"
+                    image "http://172.16.110.169:5000/android-env"
                     // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
                     args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
                 }
