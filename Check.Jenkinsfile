@@ -1,6 +1,7 @@
 def APP_MODULE = "app"
 def GRADLE_VERSION = "4.10.3"
 def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
+def JENKINS_USER = "jenkins"
 
 pipeline {
     agent none
@@ -19,12 +20,13 @@ pipeline {
                 stash name: 'Source-Code'
             }
         }
+
         stage('detekt-report') {
             agent {
                 docker {
-                    image "172.16.110.169:5000/android-env"
-                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
-                    args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
+                    label "master"
+                    image "android-env"
+                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
 
@@ -50,14 +52,14 @@ pipeline {
 
                 // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
                 // -t & --ignore-existing
-                sh "rsync -r -t --ignore-existing --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
-                sh "rsync -r -t --ignore-existing --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+                sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
+                sh "rsync -r -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
                 sh "ls -a $GRADLE_USER_HOME"
 
                 sh './gradlew clean detekt'
 
-                sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
             }
 
             post {
@@ -72,12 +74,67 @@ pipeline {
             }
         }
 
+        stage('report-github') {
+            agent {
+                docker {
+                    label "master"
+                    image "at/reporting:latest"
+//                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
+                }
+            }
+
+            options {
+                skipDefaultCheckout()
+            }
+
+            steps {
+//                sh "mkdir -p $GRADLE_USER_HOME"
+//                sh "touch $GRADLE_USER_HOME/gradle.properties"
+//                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
+//                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
+//                sh "mkdir -p $GRADLE_USER_HOME/caches"
+//                sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
+//
+//                sh "chmod 777 $GRADLE_USER_HOME"
+//                sh "chmod 777 $GRADLE_USER_HOME/caches"
+//                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
+//                unstash name: 'Source-Code'
+//
+//                sh "ls -a $GRADLE_USER_HOME"
+//                sh "ls -a $GRADLE_TEMP"
+//
+//                // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
+//                // -t & --ignore-existing
+//                sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
+//                sh "rsync -r -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
+//
+//                sh "ls -a $GRADLE_USER_HOME"
+//
+//                sh './gradlew clean detekt'
+//
+//                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+                unstash('detekt-checkstyle')
+                sh "bundle install --path /vendor/bundle"
+            }
+
+            post {
+                success {
+                    sh "bundle exec danger --danger_id=check_style --dangerfile=Dangerfile"
+                    echo 'Posted To Github!!!'
+                }
+
+                failure {
+                    echo 'Failed To Post Github!!!'
+                }
+            }
+        }
+
 //        stage('ut-report') {
 //            agent {
 //                docker {
-//                    image "at/android-env"
+//                    image "android-env"
 //                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
-//                    args "-v /Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local:$GRADLE_TEMP:rw"
+//                    args "/gradle-data:$GRADLE_TEMP:rw"
 //                }
 //            }
 //
