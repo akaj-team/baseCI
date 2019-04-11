@@ -114,11 +114,12 @@ pipeline {
 //
 //                sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
                 unstash('detekt-checkstyle')
-                sh "bundle exec danger --danger_id=check_style --dangerfile=Dangerfile"
+                sh "bundle install --path /vendor/bundle"
             }
 
             post {
                 success {
+                    sh "bundle exec danger --danger_id=check_style --dangerfile=Dangerfile"
                     echo 'Posted To Github!!!'
                 }
 
