@@ -132,3 +132,5 @@ RUN chmod -R a+rx $ANDROID_HOME $ANDROID_SDK_HOME
 #RUN chmod -R a+rx $ANDROID_NDK_HOME
 
 #RUN echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+
