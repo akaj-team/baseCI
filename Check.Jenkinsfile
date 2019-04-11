@@ -32,6 +32,7 @@ pipeline {
             }
 
             steps {
+                  sh 'pwd'
 //                sh "mkdir -p $GRADLE_USER_HOME"
 //                sh "touch $GRADLE_USER_HOME/gradle.properties"
 //                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
@@ -44,7 +45,7 @@ pipeline {
 //                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
 //                unstash name: 'Source-Code'
 //
-                sh "ls -a $GRADLE_USER_HOME"
+//                sh "ls -a $GRADLE_USER_HOME"
 //                sh "ls -a $GRADLE_TEMP"
 //
 //                // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
