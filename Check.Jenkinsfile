@@ -1,6 +1,7 @@
 def APP_MODULE = "app"
 def GRADLE_VERSION = "4.10.3"
 def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
+def JENKINS_USER = "jenkins"
 
 pipeline {
     agent none
@@ -23,7 +24,7 @@ pipeline {
             agent {
                 docker {
                     image "android-env"
-                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock"
+                    args " -u ${JENKINS_USER} -v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock"
                 }
             }
 
