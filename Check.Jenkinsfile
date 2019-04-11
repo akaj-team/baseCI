@@ -22,9 +22,9 @@ pipeline {
         stage('detekt-report') {
             agent {
                 docker {
-                    image "at/android-env"
+                    image "android-env"
                     // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
-                    // args "-v /gradle-data:$GRADLE_TEMP:rw"
+                    args "-v /gradle-data:$GRADLE_TEMP:rw"
                 }
             }
 
@@ -75,7 +75,7 @@ pipeline {
 //        stage('ut-report') {
 //            agent {
 //                docker {
-//                    image "at/android-env"
+//                    image "android-env"
 //                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
 //                    args "/gradle-data:$GRADLE_TEMP:rw"
 //                }
