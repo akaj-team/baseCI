@@ -23,8 +23,7 @@ pipeline {
             agent {
                 docker {
                     image "android-env"
-                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
-                    args "-v /gradle-data:$GRADLE_TEMP:rw"
+                    args "-v gradle-data:$GRADLE_TEMP:rw"
                 }
             }
 
