@@ -58,7 +58,7 @@ pipeline {
 
                 sh './gradlew clean detekt'
 
-                sh "rsync -t --ignore-existing ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
+                sh "rsync -t ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
             }
 
             post {
