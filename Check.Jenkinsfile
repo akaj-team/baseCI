@@ -22,7 +22,7 @@ pipeline {
         stage('detekt-report') {
             agent {
                 docker {
-                    image "http://172.16.110.169:5000/android-env"
+                    image "android-env"
                     args "-v gradle-data:$GRADLE_TEMP:rw"
                 }
             }
