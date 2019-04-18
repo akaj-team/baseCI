@@ -24,7 +24,7 @@ pipeline {
             agent {
                 docker {
                     label "master"
-                    image "android-env"
+                    image "at/android-env"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
@@ -98,7 +98,7 @@ pipeline {
 //        stage('ut-report') {
 //            agent {
 //                docker {
-//                    image "android-env"
+//                    image "at/android-env"
 //                    // Users/vinhhuynhl.b/Desktop/Gradle-Jenkins-Local can be replace by any dir or empty dir
 //                    args "/gradle-data:$GRADLE_TEMP:rw"
 //                }
