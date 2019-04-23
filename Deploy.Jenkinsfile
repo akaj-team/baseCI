@@ -23,7 +23,7 @@ pipeline {
             agent {
                 docker {
                     label "master"
-                    image "at/android-env"
+                    image "at/android-env:latest"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
