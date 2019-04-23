@@ -24,7 +24,7 @@ pipeline {
             agent {
                 docker {
                     label "master"
-                    image "at/android-env:latest"
+                    image "at/android-env"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
@@ -92,7 +92,7 @@ pipeline {
             agent {
                 docker {
                     label "master"
-                    image "at/android-env:latest"
+                    image "at/android-env"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
