@@ -34,8 +34,9 @@ pipeline {
 
             steps {
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
+                sh "chmod 777 $GRADLE_USER_HOME"
+                sh "chmod 777 $GRADLE_USER_HOME/caches"
+                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
                 unstash name: 'Source-Code'
 
                 // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
