@@ -34,16 +34,9 @@ pipeline {
             }
 
             steps {
-                sh "mkdir -p $GRADLE_USER_HOME"
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
-                sh "mkdir -p $GRADLE_USER_HOME/caches"
-                sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
-
-//                sh "chmod 777 $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_USER_HOME/caches"
-//                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
                 unstash name: 'Source-Code'
 
                 sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
@@ -109,14 +102,9 @@ pipeline {
             }
 
             steps {
-                sh "mkdir -p $GRADLE_USER_HOME"
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
-                sh "mkdir -p $GRADLE_USER_HOME/caches"
-                sh "mkdir -p $GRADLE_USER_HOME/wrapper/dists"
-
-//                sh "chmod 777 $GRADLE_USER_HOME"
-//                sh "chmod 777 $GRADLE_USER_HOME/caches"
-//                sh "chmod 777 $GRADLE_USER_HOME/wrapper/dists"
+                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
+                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
                 unstash name: 'Source-Code'
 
                 // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
