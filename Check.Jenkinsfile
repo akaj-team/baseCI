@@ -1,7 +1,7 @@
 def APP_MODULE = "app"
-def GRADLE_VERSION = "4.10.3"
-def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
-def RUNNING_NODE = "macos" // nodes master||macos are available
+def GRADLE_VERSION = "5.4.1"
+def GRADLE_WRAPPER_VERSION = "gradle-5.4.1-all"
+def RUNNING_NODE = "macos" // nodes master || macos are available
 
 pipeline {
     agent none
@@ -47,7 +47,7 @@ pipeline {
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
-                unstash name: 'Source-Code'
+                unstash('Source-Code')
 
                 sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                 sh "rsync -r -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
@@ -115,7 +115,7 @@ pipeline {
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
-                unstash name: 'Source-Code'
+                unstash('Source-Code')
 
                 // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
                 // -t & --ignore-existing
