@@ -1,6 +1,7 @@
 def APP_MODULE = "app"
 def GRADLE_VERSION = "4.10.3"
 def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
+def RUNNING_NODE = "macos"
 
 pipeline {
     agent none
@@ -20,10 +21,19 @@ pipeline {
             }
         }
 
+        stage("Clone source on node macos") {
+            agent {
+                label "$RUNNING_NODE"
+            }
+            steps {
+                unstash('Source-Code')
+            }
+        }
+
         stage('detekt-report') {
             agent {
                 docker {
-                    label "master"
+                    label "$RUNNING_NODE"
                     image "at/android-env:1.0.2"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
@@ -62,7 +72,7 @@ pipeline {
         stage('report-github') {
             agent {
                 docker {
-                    label "master"
+                    label "$RUNNING_NODE"
                     image "at/reporting:latest"
                 }
             }
@@ -91,7 +101,7 @@ pipeline {
         stage('ut-report') {
             agent {
                 docker {
-                    label "master"
+                    label "$RUNNING_NODE"
                     image "at/android-env:1.0.2"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
