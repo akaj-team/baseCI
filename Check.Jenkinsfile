@@ -21,15 +21,6 @@ pipeline {
             }
         }
 
-        stage("Clone source on node macos") {
-            agent {
-                label "$RUNNING_NODE"
-            }
-            steps {
-                unstash('Source-Code')
-            }
-        }
-
         stage('detekt-report') {
             agent {
                 docker {
@@ -45,10 +36,11 @@ pipeline {
 
             steps {
 //                sh "sudo mkdir -p /.android"
+                unstash('Source-Code')
+
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
-                unstash('Source-Code')
 
                 sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                 sh "rsync -r -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
