@@ -34,7 +34,7 @@ pipeline {
             agent {
                 docker {
                     label "$RUNNING_NODE"
-                    image "172.16.110.169:5000/at/android-env:1.0.2"
+                    image "at/android-env:1.0.2"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
@@ -102,7 +102,7 @@ pipeline {
             agent {
                 docker {
                     label "$RUNNING_NODE"
-                    image "172.16.110.169:5000/at/android-env:1.0.2"
+                    image "at/android-env:1.0.2"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
