@@ -1,7 +1,7 @@
 def APP_MODULE = "app"
 def GRADLE_VERSION = "4.10.3"
 def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
-def RUNNING_NODE = "macos"
+def RUNNING_NODE = "macos" // nodes master||macos are available
 
 pipeline {
     agent none
@@ -34,7 +34,7 @@ pipeline {
             agent {
                 docker {
                     label "$RUNNING_NODE"
-                    image "at/android-env:1.0.2"
+                    image "172.16.110.169:5000/at/android-env:1.0.2"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
@@ -102,7 +102,7 @@ pipeline {
             agent {
                 docker {
                     label "$RUNNING_NODE"
-                    image "at/android-env:1.0.2"
+                    image "172.16.110.169:5000/at/android-env:1.0.2"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
