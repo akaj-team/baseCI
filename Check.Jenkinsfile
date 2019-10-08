@@ -33,8 +33,8 @@ pipeline {
         stage('detekt-report') {
             agent {
                 docker {
-                    label "$RUNNING_NODE"
                     image "at/android-env:1.0.2"
+                    label "$RUNNING_NODE"
                     args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
@@ -45,7 +45,6 @@ pipeline {
 
             steps {
 //                sh "sudo mkdir -p /.android"
-                sh 'pwd'
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
