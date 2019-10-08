@@ -132,9 +132,13 @@ RUN id $RUN_USER || adduser --uid "$RUN_UID" \
     --disabled-password "$RUN_USER"
 
 # Fix permissions
-#RUN chown -R $RUN_USER:$RUN_USER $ANDROID_HOME $ANDROID_SDK_HOME
+RUN mkdir /.android
+RUN chown -R $RUN_USER:$RUN_USER /.android
+RUN chown -R $RUN_USER:$RUN_USER $GRADLE_HOME
+RUN chown -R $RUN_USER:$RUN_USER $ANDROID_HOME $ANDROID_SDK_HOME
 RUN chmod -R a+rx $ANDROID_HOME $ANDROID_SDK_HOME
 
+USER $RUN_USER
 #RUN chown -R $RUN_USER:$RUN_USER $ANDROID_NDK_HOME
 #RUN chmod -R a+rx $ANDROID_NDK_HOME
 
