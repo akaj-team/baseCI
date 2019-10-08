@@ -44,7 +44,7 @@ pipeline {
             }
 
             steps {
-                sh "mkdir -p /.android"
+                sh "sudo mkdir -p /.android"
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
