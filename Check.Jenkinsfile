@@ -26,7 +26,7 @@ pipeline {
                 docker {
                     image "at/android-env:1.0.2"
                     label "$RUNNING_NODE"
-                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock -v $HOME:/ --privileged"
+                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
 
