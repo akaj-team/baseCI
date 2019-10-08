@@ -24,10 +24,9 @@ pipeline {
         stage('detekt-report') {
             agent {
                 docker {
-//                    -v /var/run/docker.sock:/var/run/docker.sock
                     image "at/android-env:1.0.2"
                     label "$RUNNING_NODE"
-                    args "-v gradle-data:$GRADLE_TEMP:rw --privileged"
+                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
 
@@ -36,7 +35,6 @@ pipeline {
             }
 
             steps {
-//                sh "sudo mkdir -p /.android"
                 unstash('Source-Code')
 
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
@@ -46,7 +44,7 @@ pipeline {
                 sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
                 sh "rsync -r -au --include /${GRADLE_WRAPPER_VERSION} --exclude '/*' ${GRADLE_TEMP}/wrapper/dists/ ${GRADLE_USER_HOME}/wrapper/dists || true"
 
-                sh './gradlew clean detekt'
+                sh "./gradlew detekt"
 
                 sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
             }
