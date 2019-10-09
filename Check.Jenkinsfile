@@ -23,9 +23,9 @@ pipeline {
         stage('detekt-report') {
             agent {
                 docker {
-                    label "master"
-                    image "at/android-env:1.0.2"
-                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
+                    label "macos"
+                    image "at/android-env:1.0.6"
+                    args "-u androidci -v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
 
@@ -91,9 +91,9 @@ pipeline {
         stage('ut-report') {
             agent {
                 docker {
-                    label "master"
-                    image "at/android-env:1.0.2"
-                    args "-v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
+                    label "macos"
+                    image "at/android-env:1.0.6"
+                    args "-u androidci -v gradle-data:$GRADLE_TEMP:rw -v /var/run/docker.sock:/var/run/docker.sock --privileged"
                 }
             }
 
