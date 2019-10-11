@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         try {
 
-
         } catch (e: ActivityNotFoundException) {
         }
     }
