@@ -88,7 +88,13 @@ RUN yes | /usr/local/android-sdk/tools/bin/sdkmanager --licenses
 RUN yes | /usr/local/android-sdk/tools/bin/sdkmanager \
 "platform-tools" \
 "platforms;android-26" \
-"build-tools;26.0.2"
+"platforms;android-27" \
+"platforms;android-28" \
+"platforms;android-29" \
+"build-tools;26.0.2" \
+"build-tools;28.0.3" \
+"build-tools;29.0.0" \
+"build-tools;29.0.2" 
 
 # Install Android NDK
 #RUN wget http://dl.google.com/android/repository/android-ndk-r12-linux-x86_64.zip
@@ -109,10 +115,13 @@ ENV PATH $PATH:$ANDROID_NDK_HOME
 
 # Gradle home folder
 ENV GRADLE_HOME /.gradle
+ENV GRADLE_TEMP /.gradle_temp
 
 RUN mkdir -p $GRADLE_HOME/caches
 RUN mkdir -p $GRADLE_HOME/wrapper/dists
 RUN chmod -R 777 $GRADLE_HOME
+
+RUN mkdir -p $GRADLE_TEMP
 
 # Export JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
@@ -132,9 +141,14 @@ RUN id $RUN_USER || adduser --uid "$RUN_UID" \
     --disabled-password "$RUN_USER"
 
 # Fix permissions
-#RUN chown -R $RUN_USER:$RUN_USER $ANDROID_HOME $ANDROID_SDK_HOME
+RUN chown -R $RUN_USER:$RUN_USER $GRADLE_HOME $GRADLE_TEMP
+RUN chown -R $RUN_USER:$RUN_USER $ANDROID_HOME $ANDROID_SDK_HOME
 RUN chmod -R a+rx $ANDROID_HOME $ANDROID_SDK_HOME
 
+RUN mkdir /.android
+RUN chown -R $RUN_USER:$RUN_USER /.android
+
+USER $RUN_USER
 #RUN chown -R $RUN_USER:$RUN_USER $ANDROID_NDK_HOME
 #RUN chmod -R a+rx $ANDROID_NDK_HOME
 
