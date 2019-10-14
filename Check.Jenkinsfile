@@ -34,9 +34,9 @@ pipeline {
             }
 
             steps {
-                sh "touch $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
+//                sh "touch $GRADLE_USER_HOME/gradle.properties"
+//                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
+//                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
                 unstash name: 'Source-Code'
 
                 sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
