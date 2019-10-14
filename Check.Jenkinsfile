@@ -1,6 +1,6 @@
 def APP_MODULE = "app"
-def GRADLE_VERSION = "4.10.3"
-def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
+def GRADLE_VERSION = "5.4.1"
+def GRADLE_WRAPPER_VERSION = "gradle-5.4.1-all"
 
 pipeline {
     agent none
