@@ -8,6 +8,7 @@ pipeline {
     environment {
         GRADLE_USER_HOME = '/.gradle'
         GRADLE_TEMP = '/.gradle_temp'
+        // Only using for repo that not belong to asiantect Inc
         DANGER_GITHUB_API_TOKEN = "5e620f1575cd0e2d70c2fbe9ed1c4db097d82ec9"
     }
 
