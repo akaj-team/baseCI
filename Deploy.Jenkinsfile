@@ -1,5 +1,5 @@
-def GRADLE_VERSION = "4.10.3"
-def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
+def GRADLE_VERSION = "5.4.1"
+def GRADLE_WRAPPER_VERSION = "gradle-5.4.1-all"
 def DEPLOY_ENV = "Debug"
 pipeline {
     agent none
@@ -49,7 +49,7 @@ pipeline {
 
                 writeFile file: "release_notes.txt", text: "${BRANCH_NAME}: #${BUILD_ID}\n"
                 sh 'git log --oneline -1 >> release_notes.txt'
-                sh "./gradlew --stacktrace assemble${DEPLOY_ENV} appDistributionUpload${DEPLOY_ENV}"
+                sh "./gradlew assemble${DEPLOY_ENV} appDistributionUpload${DEPLOY_ENV}"
 
                 sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
             }
