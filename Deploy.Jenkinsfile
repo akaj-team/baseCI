@@ -9,7 +9,7 @@ pipeline {
         GRADLE_TEMP = '/.gradle_temp'
         // Authenticate using service account
         // https://firebase.google.com/docs/app-distribution/android/distribute-gradle
-        FIREBASE_TOKEN = '1//0eVsn13Pwk83HCgYIARAAGA4SNwF-L9IrEpWBs6XEITDKDZqylKe1J6t5r2hKA2RJ5QNy56bp0zjiesjZD8gUVkRwBM3Y4Ei0keg'
+        FIREBASE_TOKEN = '1//0eLNSx9j8sXRiCgYIARAAGA4SNwF-L9IranfWEKH-3mQ_Ensn8RwLTq2XjW8tPhJFerfKwRjz-2KJSNaE4F2Op0MIYUdyOo14EEM'
     }
 
     stages {

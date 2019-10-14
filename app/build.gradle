@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.appdistribution'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "jenkin.android.asiantech.myapplication"
         minSdkVersion 21
