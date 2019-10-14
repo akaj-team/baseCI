@@ -8,6 +8,7 @@ pipeline {
     environment {
         GRADLE_USER_HOME = '/.gradle'
         GRADLE_TEMP = '/.gradle_temp'
+        DANGER_GITHUB_API_TOKEN = "5e620f1575cd0e2d70c2fbe9ed1c4db097d82ec9"
     }
 
     stages {
@@ -34,9 +35,6 @@ pipeline {
             }
 
             steps {
-//                sh "touch $GRADLE_USER_HOME/gradle.properties"
-//                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
-//                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
                 unstash name: 'Source-Code'
 
                 sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
