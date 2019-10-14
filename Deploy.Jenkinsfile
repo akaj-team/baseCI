@@ -1,20 +1,24 @@
-def GRADLE_VERSION = "4.10.1"
-def GRADLE_WRAPPER_VERSION = "gradle-4.10.1-all"
-
+def GRADLE_VERSION = "5.4.1"
+def GRADLE_WRAPPER_VERSION = "gradle-5.4.1-all"
+def DEPLOY_ENV = "Debug"
 pipeline {
     agent none
 
     environment {
         GRADLE_USER_HOME = '/.gradle'
         GRADLE_TEMP = '/.gradle_temp'
+        // Authenticate using service account
+        // https://firebase.google.com/docs/app-distribution/android/distribute-gradle
+        FIREBASE_TOKEN = '1//0eLNSx9j8sXRiCgYIARAAGA4SNwF-L9IranfWEKH-3mQ_Ensn8RwLTq2XjW8tPhJFerfKwRjz-2KJSNaE4F2Op0MIYUdyOo14EEM'
     }
 
     stages {
         stage('Checkout') {
-            agent any
+            agent {
+                label 'master'
+            }
 
             steps {
-                checkout scm
                 stash name: 'Source-Code'
             }
         }
@@ -36,7 +40,6 @@ pipeline {
                 sh "touch $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
                 sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
-
                 unstash name: 'Source-Code'
 
                 // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
@@ -46,8 +49,7 @@ pipeline {
 
                 writeFile file: "release_notes.txt", text: "${BRANCH_NAME}: #${BUILD_ID}\n"
                 sh 'git log --oneline -1 >> release_notes.txt'
-                sh './gradlew :app:assembleStaging \
-                    crashlyticsUploadDistributionDebug'
+                sh "./gradlew assemble${DEPLOY_ENV} appDistributionUpload${DEPLOY_ENV} --stacktrace"
 
                 sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
             }
