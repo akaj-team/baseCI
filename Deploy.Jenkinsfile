@@ -49,7 +49,7 @@ pipeline {
 
                 writeFile file: "release_notes.txt", text: "${BRANCH_NAME}: #${BUILD_ID}\n"
                 sh 'git log --oneline -1 >> release_notes.txt'
-                sh "./gradlew assemble${DEPLOY_ENV} appDistributionUpload${DEPLOY_ENV}"
+                sh "./gradlew assemble${DEPLOY_ENV} appDistributionUpload${DEPLOY_ENV} --stacktrace"
 
                 sh "rsync -au ${GRADLE_USER_HOME}/caches ${GRADLE_USER_HOME}/wrapper ${GRADLE_TEMP}/ || true"
             }

@@ -8,43 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:564279511850:android:17901edc89daed91",
-        "android_client_info": {
-          "package_name": "example.remoteconfigfirebase"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "564279511850-nj20dibt0hhljfb731bhvs2tc6v87vef.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "example.remoteconfigfirebase",
-            "certificate_hash": "a918c4dc75bbee0bd1c9f43c871945792b4288f2"
-          }
-        },
-        {
-          "client_id": "564279511850-7hn6m7f5544lb9kq6vp89r7nu2d67lks.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBxJilKdFPPbcr8TdtEN0h8z1usN7KiteA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "564279511850-7hn6m7f5544lb9kq6vp89r7nu2d67lks.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:564279511850:android:1e8621fd9589d8ccdeec53",
         "android_client_info": {
           "package_name": "jenkin.android.asiantech.myapplication"
