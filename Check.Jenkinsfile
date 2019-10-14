@@ -61,6 +61,7 @@ pipeline {
                 docker {
                     label "master"
                     image "at/reporting:latest"
+                    args "-u androidci"
                 }
             }
 
