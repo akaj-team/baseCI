@@ -16,7 +16,7 @@ pipeline {
 
             steps {
                 checkout scm
-                stash includes: '**', name: 'Source-Code', useDefaultExcludes: false
+                stash name: 'Source-Code'
             }
         }
 
@@ -61,16 +61,10 @@ pipeline {
                 docker {
                     label "master"
                     image "at/reporting:latest"
-                    args "-u androidci"
                 }
             }
 
-            options {
-                skipDefaultCheckout()
-            }
-
             steps {
-                unstash('Source-Code')
                 unstash('detekt-checkstyle')
                 sh "bundle install --path /vendor/bundle"
             }
@@ -101,6 +95,9 @@ pipeline {
             }
 
             steps {
+                sh "touch $GRADLE_USER_HOME/gradle.properties"
+                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
+                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
                 unstash name: 'Source-Code'
 
                 // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
