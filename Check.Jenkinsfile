@@ -72,6 +72,7 @@ pipeline {
             }
 
             steps {
+                unstash name: 'Source-Code'
                 unstash('detekt-checkstyle')
                 sh "bundle install --path /vendor/bundle"
             }
