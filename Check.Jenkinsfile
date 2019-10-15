@@ -1,6 +1,6 @@
 def APP_MODULE = "app"
-def GRADLE_VERSION = "4.10.3"
-def GRADLE_WRAPPER_VERSION = "gradle-4.10.3-all"
+def GRADLE_VERSION = "5.4.1"
+def GRADLE_WRAPPER_VERSION = "gradle-5.4.1-all"
 
 pipeline {
     agent none
@@ -34,9 +34,6 @@ pipeline {
             }
 
             steps {
-                sh "touch $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
                 unstash name: 'Source-Code'
 
                 sh "rsync -r -au --include /${GRADLE_VERSION} --exclude '/*' ${GRADLE_TEMP}/caches/ ${GRADLE_USER_HOME}/caches || true"
@@ -65,10 +62,6 @@ pipeline {
                     label "master"
                     image "at/reporting:latest"
                 }
-            }
-
-            options {
-                skipDefaultCheckout()
             }
 
             steps {
@@ -102,9 +95,6 @@ pipeline {
             }
 
             steps {
-                sh "touch $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.daemon=true' >> $GRADLE_USER_HOME/gradle.properties"
-                sh "echo 'org.gradle.configureondemand=true' >> $GRADLE_USER_HOME/gradle.properties"
                 unstash name: 'Source-Code'
 
                 // https://unix.stackexchange.com/questions/67539/how-to-rsync-only-new-files
