@@ -1,8 +1,9 @@
 name: CI
 
 on: push
-  branches:
-    - 'test-github-action'
+
+branches:
+  - 'test-github-action'
 
 jobs:
   build:
