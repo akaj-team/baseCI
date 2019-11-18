@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Cache dependenci
+        uses: actions/cache@v1
+        with:
+          path: /home/runner/.gradle
+          key: ${{ runner.os }}-gradle
+
+      - name: Build apk & deploy
+        run: ./gradlew :app:assembleDebug appDistributionUploadDebug
+        env:
+          FIREBASE_TOKEN: 1//0eLNSx9j8sXRiCgYIARAAGA4SNwF-L9IranfWEKH-3mQ_Ensn8RwLTq2XjW8tPhJFerfKwRjz-2KJSNaE4F2Op0MIYUdyOo14EEM
