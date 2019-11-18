@@ -8,13 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v1
-      - uses: ./
-#      - name: build an android container
-#        run:
-#          using: 'docker'
-#          image: 'Dockerfile'
       - name: Run a multi-line script
         run: |
           ./gradlew assembleDebug,
