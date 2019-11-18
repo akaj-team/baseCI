@@ -11,11 +11,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v1
       - uses: ./
-      - name: build an android container
-        run:
-          using: 'docker'
-          image: 'Dockerfile'
+#      - name: build an android container
+#        run:
+#          using: 'docker'
+#          image: 'Dockerfile'
       - name: Run a multi-line script
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          ./gradlew assembleDebug,
+          ./gradlew appDistributionUpload.
