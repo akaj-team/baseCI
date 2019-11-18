@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - 'master'
+      - 'test-github-action'
 jobs:
   gradle:
     runs-on: ubuntu-latest
@@ -14,7 +14,7 @@ jobs:
         with:
           path: /home/runner/.gradle
           key: ${{ runner.os }}-gradle
-        
+
       - name: Build apk & deploy
         run: ./gradlew :app:assembleDebug appDistributionUploadDebug
         env:
