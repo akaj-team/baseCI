@@ -57,15 +57,15 @@ jobs:
         run: ./gradlew clean detekt
 
       - name: Run unitest
-          if: github.event_name == 'pull_request'
-          run: ./gradlew jacocoTestReport
+        if: github.event_name == 'pull_request'
+        run: ./gradlew jacocoTestReport
 
       - name: Upload Artifact
-          uses: actions/upload-artifact@v1
-          if: github.event_name == 'pull_request'
-          with:
-            name: UnitTest-Artifact
-            path: 'app/build/reports/'
+        uses: actions/upload-artifact@v1
+        if: github.event_name == 'pull_request'
+        with:
+          name: UnitTest-Artifact
+          path: 'app/build/reports/'
 
       - name: Report github
         if: github.event_name == 'pull_request'
