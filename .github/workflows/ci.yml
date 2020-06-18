@@ -56,19 +56,19 @@ jobs:
         if: github.event_name == 'pull_request'
         run: ./gradlew clean detekt
 
-#      - name: Run unitest
-#        if: github.event_name == 'pull_request'
-#        run: ./gradlew jacocoTestReport
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v1
-#        if: github.event_name == 'pull_request'
-#        with:
-#          name: UnitTest-Artifact
-#          path: 'app/build/reports/'
+      #      - name: Run unitest
+      #        if: github.event_name == 'pull_request'
+      #        run: ./gradlew jacocoTestReport
+      #
+      #      - name: Upload Artifact
+      #        uses: actions/upload-artifact@v1
+      #        if: github.event_name == 'pull_request'
+      #        with:
+      #          name: UnitTest-Artifact
+      #          path: 'app/build/reports/'
 
       - name: Report github
         if: github.event_name == 'pull_request'
         run: bundle exec danger --danger_id=check_style --dangerfile=Dangerfile
         env:
-          DANGER_GITHUB_API_TOKEN: bbedafcea63faaa215e26384bf8948c46e2f7d4d
+          DANGER_GITHUB_API_TOKEN: 5eba121a7cff571c584acc93eae9dd7454280e37
