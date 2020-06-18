@@ -1,0 +1,25 @@
+name: Deploy
+
+env:
+  GRADLE_VERSION: '6.3'
+
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache dependenci
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Build apk & deploy
+        run: ./gradlew :app:assembleDebug appDistributionUploadDebug
+          env:
+            FIREBASE_TOKEN: 1//0eLNSx9j8sXRiCgYIARAAGA4SNwF-L9IranfWEKH-3mQ_Ensn8RwLTq2XjW8tPhJFerfKwRjz-2KJSNaE4F2Op0MIYUdyOo14EEM
