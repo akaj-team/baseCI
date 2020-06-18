@@ -71,4 +71,4 @@ jobs:
         if: github.event_name == 'pull_request'
         run: bundle exec danger --danger_id=check_style --dangerfile=Dangerfile
         env:
-          DANGER_GITHUB_API_TOKEN: f948e39082005e6a370ff168abfa1bf3340f7ed2
+          DANGER_GITHUB_API_TOKEN: 4284655ee97b791f963d54bcd3973b50e54b985b
